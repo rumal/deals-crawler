@@ -11,5 +11,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/rumal/deals-crawler"
+  },
+  "dependencies": {
+    "crawler": "^0.4.1"
   }
 }
