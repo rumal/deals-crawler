@@ -7,6 +7,7 @@ var c = new Crawler({
     callback : function (error, result, $) {
         console.error("Default callback");
     },
+    userAgent : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:21.0) Gecko/20100101 Firefox/21.0",
     onDrain : function(){
         dealAPI.export();
     }
