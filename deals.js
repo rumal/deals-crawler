@@ -37,7 +37,12 @@ var dealAPI = {
         deal.sourceLink = sourceLink;
         deal.updatedTime = updatedTime;
         deal.validity = validity;
+
+        tags = _.map(tags, function(tag){
+            return _.str.slugify(tag);
+        });
         deal.tags = _.flatten(tags);
+        
         return deal;
     },
     add : function(deal){
