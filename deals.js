@@ -1,34 +1,45 @@
 var Crawler = require("crawler"),
     _ = require("underscore");
+    _.str = require("underscore.string");
 //
+
+function toAbsoluteURL (url, base) {
+    if (_.str.startsWith(url, "http")){
+        return url;
+    }else{
+        return base + url;
+    }
+}
+
+
 var c = new Crawler({
     maxConnections : 10,
     // This will be called for each crawled page
     callback : function (error, result, $) {
-        console.error("Default callback");
+        throw "Default callback is called.";
     },
-    userAgent : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:21.0) Gecko/20100101 Firefox/21.0",
+    userAgent : "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36",
     onDrain : function(){
         dealAPI.export();
     }
-});
-var deals = [],
+}),
+    baseDomain,
+    deals = [],
     requiredFields = ['title', 'sourceLink', 'description', 'tags'],
-    defaultTags = ['credit'];
+    defaultTags = [];
 
 var dealAPI = {
-    crawler : c,
-    Deal : function(title, description, sourceLink, updatedTime, validTill, tags){
+    Deal : function(title, description, partner, sourceLink, updatedTime, validity, tags){
         var deal = {};
         deal.title = title;
         deal.description = description;
+        deal.partner = partner;
         deal.sourceLink = sourceLink;
         deal.updatedTime = updatedTime;
-        deal.validTill = validTill;
+        deal.validity = validity;
         deal.tags = _.flatten(tags);
         return deal;
     },
-    tag : defaultTags,
     add : function(deal){
         if (!_.isEmpty(_.difference(requiredFields, _.keys(deal)))){
             throw "Required fields are missing";
@@ -38,6 +49,13 @@ var dealAPI = {
     },
     export : function(){
         console.log(deals);
+    },
+    queue : function(uri, callback){
+        c.queue({uri : toAbsoluteURL(uri, baseDomain), callback : callback});
     }
 }
-module.exports = dealAPI;
+module.exports = function(base, tags){
+    baseDomain = base;
+    defaultTags = tags;
+    return dealAPI;
+};
