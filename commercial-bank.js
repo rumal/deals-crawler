@@ -1,7 +1,7 @@
-var BASE_DOMAIN = "http://www.sampath.lk/";
+var BASE_DOMAIN = "http://www.combank.net";
 
 
-var Deals = require('./deals.js')(BASE_DOMAIN, ['sampath-bank']),
+var Deals = require('./deals.js')(BASE_DOMAIN, ['commercial-bank']),
     _ = require('underscore.string');
 
 
@@ -11,47 +11,68 @@ var Deals = require('./deals.js')(BASE_DOMAIN, ['sampath-bank']),
  * @param result
  * @param $
  */
-var dealPageCB = function (error, result, $) {
+var offerDetailPageCB = function (error, result, $) {
     if (error) throw error;
 
-    var title = $(".responsive-offer h1 + p").text();
-    var description = $(".responsive-offer h2 + ol").text();
-    var partner = _.strRight($(".responsive-offer h1 + p + p").text(), "Partner: ");
-    var validity = _.strRight($(".responsive-offer h1 + p + p + p").text(), "Promotion Period: ");
-
-    var tags = [];
-    var eligibleCards = _.strRight($(".responsive-offer h1 + p + p + p + p").text(),"Eligible Card Categories: ");
-    if (_.include(eligibleCards, "MasterCard")){
-        tags.push("master-cards");
-    }
-    if (_.include(eligibleCards, "Visa")){
-        tags.push("visa-cards");
-    }
-
-
+    var title = $("h1").text();
+    var description = $(".offer-details").text();
     var sourceLink = result.uri;
     var updatedTime = +new Date();
+    var tags = [];
+    var validity = "";
+    var partner = "";
+    var imgSelector = ".offer-details img";
 
     var deal = Deals.Deal(title, description , partner, sourceLink, updatedTime, validity, tags);
-    if ($(".responsive-offer img").attr('src'))
-        deal.image = $(".responsive-offer img").attr('src');
+    if ($(imgSelector).attr('src'))
+        deal.image = $(imgSelector).attr('src');
 
     Deals.add(deal);
 };
 
-/**
- * Handles the main deal list pages
- * @param error
- * @param result
- * @param $
- */
-var mainPageCB = function (error, result, $) {
+var subOfferDetailPageCB = function (error, result, $) {
     if (error) throw error;
-    $("a.readmore.download").each(function(index, a){
-        var dealURL = $(a).attr('href');
-        Deals.queue(dealURL, dealPageCB, BASE_DOMAIN);
+
+
+    $("#location-tabs div").each(function(i, e){
+        var title = "";
+        var description = "";
+        var sourceLink = result.uri;
+        var updatedTime = +new Date();
+        var tags = [];
+        var validity = "";
+        var partner = "";
+        var imgSelector = "img";
+
+        var deal = Deals.Deal(title, description , partner, sourceLink, updatedTime, validity, tags);
+        if ($(imgSelector).attr('src'))
+            deal.image = $(imgSelector, e).attr('src');
+
+        Deals.add(deal);
     });
+
 };
 
-Deals.queue('/en/credit-card-offers', mainPageCB);
+/**
+ * Handles the main deal list pages
+**/
+Deals.queue('/newweb/personal/cards/offers?mode=card', function (error, result, $) {
+    if (error) throw error;
+    $("#product-1 .offer-item a.product-link").each(function(index, a){
+        var dealURL = $(a).attr('href');
+        Deals.queue(dealURL, offerDetailPageCB);
+    });
+});
 
+Deals.queue('/newweb/personal/cards/offers?cat=Automobile', function (error, result, $) {
+    if (error) throw error;
+
+    //Add relative sub offer pages
+    $("#product-menu a").each(function(index, a){
+        var dealURL = $(a).attr('href');
+        Deals.queue(dealURL, subOfferDetailPageCB);
+    });
+
+    //Add the current page offers
+    subOfferDetailPageCB(error, result, $);
+});
