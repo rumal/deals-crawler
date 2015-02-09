@@ -42,14 +42,15 @@ var dealAPI = {
             return _.str.slugify(tag);
         });
         deal.tags = _.flatten(tags);
-        
+
         return deal;
     },
     add : function(deal){
-        if (!_.isEmpty(_.difference(requiredFields, _.keys(deal)))){
-            throw "Required fields are missing";
-        }
         deal.tags = _.union(deal.tags, defaultTags);
+
+        if (deal.image)
+            deal.image = toAbsoluteURL(deal.image, baseDomain);
+
         deals.push(deal);
     },
     export : function(){
