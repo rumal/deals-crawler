@@ -31,12 +31,12 @@ var c = new Crawler({
 var dealAPI = {
     Deal : function(title, description, partner, sourceLink, updatedTime, validity, tags){
         var deal = {};
-        deal.title = title;
-        deal.description = description;
-        deal.partner = partner;
+        deal.title = _.str.clean(title);
+        deal.description = _.str.dedent(description);
+        deal.partner = _.str.clean(partner);
         deal.sourceLink = sourceLink;
         deal.updatedTime = updatedTime;
-        deal.validity = validity;
+        deal.validity = _.str.clean(validity);
 
         tags = _.map(tags, function(tag){
             return _.str.slugify(tag);
