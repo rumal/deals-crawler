@@ -28,13 +28,16 @@ var dealPageCB = function (error, result, $) {
         tags.push("visa-cards");
     }
 
+    tags.push(_.strLeft(partner, " (Pvt) Ltd"))
+
 
     var sourceLink = result.uri;
     var updatedTime = +new Date();
+    var imageSelector = ".responsive-offer img";
 
     var deal = Deals.Deal(title, description , partner, sourceLink, updatedTime, validity, tags);
-    if ($(".responsive-offer img").attr('src'))
-        deal.image = $(".responsive-offer img").attr('src');
+    if ($(imageSelector).attr('src'))
+        deal.image = $(imageSelector).attr('src');
 
     Deals.add(deal);
 };
