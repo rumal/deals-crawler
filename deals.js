@@ -18,6 +18,7 @@ var c = new Crawler({
     callback : function (error, result, $) {
         throw "Default callback is called.";
     },
+    skipDuplicates : true,
     userAgent : "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36",
     onDrain : function(){
         dealAPI.export();
