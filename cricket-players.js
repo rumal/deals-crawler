@@ -1,4 +1,4 @@
-var Questions = require('./questions.js')(),
+var Questions = require('./questions.js')("http://www.starsports.com"),
     _ = require('underscore');
 
 
@@ -89,3 +89,4 @@ _.each(countryIndex, function(index, i){
 ///cricket/tour/tourid=164/seriesinstanceid=1869/teamid=16/library
 ///cricket/tour/tourid=164/seriesinstanceid=1869/teamid=21/library
 ///cricket/tour/tourid=164/seriesinstanceid=1869/teamid=1188/library
+

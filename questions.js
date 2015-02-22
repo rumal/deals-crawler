@@ -1,6 +1,8 @@
 var Crawler = require("crawler"),
     _ = require("underscore");
-    _.str = require("underscore.string");
+    _.str = require("underscore.string"),
+    exec = require('child_process').exec,
+    fs = require('fs');
 //
 
 function toAbsoluteURL (url, base) {
@@ -40,12 +42,25 @@ var dealAPI = {
         questions.push(question);
     },
     export : function(){
+        exec('mkdir -p dist/images');
+
+        var files = _.uniq(_.map(questions, function(q){ return toAbsoluteURL(q.image, base);})).join(" ");
+        exec('wget -P ./dist/images/ '+files, function (error, stdout, stderr) {
+            // output is in stdout
+        });
+
+        _.each(questions, function(q){
+            q.image = _.str.strRightBack(q.image,"/");
+        });
+
+        fs.writeFile("./dist/questions.json", JSON.stringify(questions));
         console.log(questions);
     },
     queue : function(uri, callback){
         c.queue({uri : toAbsoluteURL(uri, baseDomain), callback : callback});
     }
 }
-module.exports = function(){
+module.exports = function(baseDomain){
+    base = baseDomain;
     return dealAPI;
 };
