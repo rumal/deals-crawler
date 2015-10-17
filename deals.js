@@ -30,7 +30,7 @@ var c = new Crawler({
     defaultTags = [];
 
 var dealAPI = {
-    Deal : function(title, description, partner, sourceLink, updatedTime, validity, tags){
+    Question : function(title, description, partner, sourceLink, updatedTime, validity, tags){
         var deal = {};
         deal.title = _.str.clean(title);
         deal.description = _.str.dedent(description);

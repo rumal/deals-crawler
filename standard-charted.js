@@ -31,7 +31,11 @@ var offerDetailPageCB = function (error, result, $) {
 
 };
 
-Deals.queue('lk/credit-cards/offers/', function (error, result, $) {
+//Deals.queue('/lk/credit-cards/latest-promotions/en/#', function (error, result, $) {
+//
+//
+//});
+Deals.queue('https://www.sc.com/lk/credit-cards/latest-promotions/dine_i_style/en/', function (error, result, $) {
     if (error) throw error;
 
     //Add relative sub offer pages

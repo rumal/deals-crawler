@@ -35,7 +35,11 @@ var dealAPI = {
         ques.question = question;
         ques.answers = answers;
         ques.answer = answer;
-        ques.image = image;
+        ques.images = image;
+        ques.questionType = 'image';
+        ques.countdown = 10;
+        ques.score = 3;
+        ques.isVisible = true;
         return ques;
     },
     add : function(question){
@@ -44,16 +48,16 @@ var dealAPI = {
     export : function(){
         exec('mkdir -p dist/images');
 
-        var files = _.uniq(_.map(questions, function(q){ return toAbsoluteURL(q.image, base);})).join(" ");
+        var files = _.uniq(_.map(questions, function(q){ return toAbsoluteURL(q.images, base);})).join(" ");
         exec('wget -P ./dist/images/ '+files, function (error, stdout, stderr) {
             // output is in stdout
         });
 
         _.each(questions, function(q){
-            q.image = _.str.strRightBack(q.image,"/");
+            q.images = "static/"+_.str.strRightBack(q.images,"/");
         });
 
-        fs.writeFile("./dist/questions.json", JSON.stringify(questions));
+        fs.writeFile("./dist/"+_.str.slugify(base)+".json", JSON.stringify({results: questions}));
         console.log(questions);
     },
     queue : function(uri, callback){

@@ -35,7 +35,7 @@ var playerCB = function (country, error, result, $) {
 
     //Player name
     _.each(whoIsPlayerQuestion, function(question){
-        question.answers = _.sample(playerNames, 3);
+        question.answers = _.sample(_.without(playerNames,question.answer), 3);
         question.answers.push(question.answer);
         question.answers = _.shuffle(question.answers).join(",");
         Questions.add(question);
@@ -44,7 +44,7 @@ var playerCB = function (country, error, result, $) {
 
     //Which country question
     _.each(whichTeamQuestion, function(question){
-        question.answers = _.sample(countries, 3);
+        question.answers = _.sample(_.without(countries,question.answer), 3);
         question.answers.push(question.answer);
         question.answers = _.shuffle(question.answers).join(",");
         Questions.add(question);
